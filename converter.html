@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="converter.css">
+    <title>ValuCalc</title>
+</head>
+<body>
+    <h1>Конвертер любого колличества валюты в одну</h1>
+    <div class="more-text" style="display:none;">
+        <p class="more-btn-text">Этот калькулятор может помочь вам если у вас много разной валлюты и вы хотите</p>
+        <p class="more-btn-text">увидеть их стоимость в одной. Например:</p>
+        <p class="more-btn-text">У меня 2 доллара, 15 рублей, 2 йены. Сколько это будет в евро? и т.п</p>
+    </div>
+    <button class="read-more-btn">Подробнее...</button>
+
+    <script>
+document.querySelector('.read-more-btn').addEventListener('click', function() {
+    let moreText = this.previousElementSibling;
+    if (moreText.style.display === "none") {
+        moreText.style.display = "block";
+        this.textContent = "Скрыть";
+    } else {
+        moreText.style.display = "none";
+        this.textContent = "Подробнее...";
+    }
+});
+</script>
+</body>
+</html>
