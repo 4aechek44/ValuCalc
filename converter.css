@@ -1,0 +1,10 @@
+h1 {
+    text-align: center;
+}
+.read-more-btn {
+    display: block;
+    margin: 20px auto;
+}
+.more-text {
+    text-align: center;
+}
