@@ -17,31 +17,51 @@
     <button class="read-more-btn">Подробнее...</button>
 
     <!-- Ячейки -->
-<div class="currency-cells">
-  
-  <div class="cells-container">
-    <div class="currency-cell">
-      <div class="top-currency-cells">
+    <div class="currency-cells">
+      <div class="cells-container">
+        <h3>У меня есть:</h3>
+        
+        <div class="top-currency-cells">
         <button>USD</button>
         <button>EUR</button>
         <button>RUB</button>
 
         <select>
-          <option value="...">...</option>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-          <option value="RUB">RUB</option>
-          <option value="JPY">JPY</option>
+        <option value="...">...</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="RUB">RUB</option>
+        <option value="JPY">JPY</option>
         </select>
         
         <button class="add-cell">+</button>
-
-      </div>  
+       </div>  
 
       <input type="number" min="0" step="1" placeholder="Введите количество">
+    
     </div>
-  </div>
 
+    <button class="convert-btn">Конвертировать</button>
+
+    <div class="convert-currency-cell">
+      <h3>Стоимость:</h3>
+      <div class="top-currency-cells">
+        <button>USD</button>
+        <button>EUR</button>
+        <button>RUB</button>
+    
+      <select>
+        <option value="...">...</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="RUB">RUB</option>
+        <option value="JPY">JPY</option>
+      </select>
+    
+        </div>  
+    
+        <input type="number" min="0" step="1" placeholder="Результат конвертации" disabled>
+    </div>
 </div>
 
     <script>
