@@ -17,12 +17,15 @@
     <button class="read-more-btn">Подробнее...</button>
 
     <!-- Ячейки -->
-    <div class="currency-cells">
+<div class="currency-cells">
+  
+  <div class="cells-container">
+    <div class="currency-cell">
       <div class="top-currency-cells">
         <button>USD</button>
         <button>EUR</button>
         <button>RUB</button>
-      
+
         <select>
           <option value="...">...</option>
           <option value="USD">USD</option>
@@ -30,12 +33,19 @@
           <option value="RUB">RUB</option>
           <option value="JPY">JPY</option>
         </select>
-      </div>  
         
+        <button class="add-cell">+</button>
+
+      </div>  
+
       <input type="number" min="0" step="1" placeholder="Введите количество">
     </div>
+  </div>
+
+</div>
 
     <script>
+        // Скрипт для кнопки "Подробнее..."
         document.querySelector('.read-more-btn').addEventListener('click', function() {
       let moreText = this.previousElementSibling;
       if (moreText.style.display === "none") {
@@ -46,6 +56,41 @@
         this.textContent = "Подробнее...";
       }
       });
+
+        //   Скрипт для кнопки добавления новой ячейки
+document.querySelector('.add-cell').addEventListener('click', function() {
+  
+  const container = document.querySelector('.cells-container');
+
+  const newCell = document.createElement('div');
+  newCell.classList.add('currency-cell');
+
+  newCell.innerHTML = `
+    <div class="top-currency-cells">
+      <button>USD</button>
+      <button>EUR</button>
+      <button>RUB</button>
+
+      <select>
+        <option value="...">...</option>
+        <option value="USD">USD</option>
+        <option value="EUR">EUR</option>
+        <option value="RUB">RUB</option>
+        <option value="JPY">JPY</option>
+      </select>
+
+      <button class="del-cell"> - </button>
+    </div>  
+
+    <input type="number" min="0" step="1" placeholder="Введите количество">
+  `;
+
+  newCell.querySelector('.del-cell').addEventListener('click', function() {
+    newCell.remove();
+  });
+
+  container.appendChild(newCell);
+});
     </script>
 </body>
 </html>
