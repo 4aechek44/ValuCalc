@@ -36,9 +36,9 @@
             <div class="cells-container">
                 <h3>У меня есть</h3>
                 <div class="top-currency-cells">
-                    <button class="cur-btn" data-cur="USD">USD</button>
-                    <button class="cur-btn" data-cur="EUR">EUR</button>
-                    <button class="cur-btn" data-cur="RUB">RUB</button>
+                    <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
+                    <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
+                    <button class="cur-btn" data-cur="RUB">RUB <span style="opacity:.55;font-size:11px">₽</span></button>
                     <select class="cur-select">
                         <option value="">...</option>
                     </select>
@@ -52,9 +52,9 @@
             <div class="convert-currency-cell">
                 <h3>Стоимость</h3>
                 <div class="top-currency-cells">
-                    <button class="cur-btn" data-cur="USD">USD</button>
-                    <button class="cur-btn" data-cur="EUR">EUR</button>
-                    <button class="cur-btn" data-cur="RUB">RUB</button>
+                    <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
+                    <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
+                    <button class="cur-btn" data-cur="RUB">RUB <span style="opacity:.55;font-size:11px">₽</span></button>
                     <select class="cur-select">
                         <option value="">...</option>
                     </select>
@@ -68,6 +68,21 @@
 
 <script src="https://www.cbr-xml-daily.ru/money.js"></script>
 <script>
+// ── Символы валют ──
+const SYMBOLS = {
+    USD: '$', EUR: '€', RUB: '₽', GBP: '£', JPY: '¥',
+    CNY: '¥', CHF: '₣', AUD: 'A$', CAD: 'C$', KZT: '₸',
+    BYN: 'Br', AMD: '֏', UZS: 'сум', TRY: '₺', INR: '₹',
+    KRW: '₩', BRL: 'R$', MXN: 'MX$', SEK: 'kr', NOK: 'kr',
+    DKK: 'kr', PLN: 'zł', CZK: 'Kč', HUF: 'Ft', SGD: 'S$',
+    HKD: 'HK$', NZD: 'NZ$', ZAR: 'R', UAH: '₴', GEL: '₾',
+    AZN: '₼', THB: '฿', MYR: 'RM', IDR: 'Rp', PHP: '₱',
+};
+
+function sym(code) {
+    return SYMBOLS[code] ? ` <span style="opacity:.55;font-size:11px">${SYMBOLS[code]}</span>` : '';
+}
+
 // ── Группы валют для сайдбара ──
 const SIDEBAR_GROUPS = [
     {
@@ -130,7 +145,7 @@ function renderRates() {
             html += `
                 <div class="rate-row">
                     <span class="rate-pair">${from}/${to}</span>
-                    <span class="rate-val">${display}</span>
+                    <span class="rate-val">${SYMBOLS[to] || ''} ${display}</span>
                 </div>`;
         }
     }
@@ -146,7 +161,7 @@ function renderRates() {
 // ── Заполнить селекты всеми валютами из API ──
 function populateSelects() {
     const codes = Object.keys(fx.rates).sort();
-    const options = codes.map(c => `<option value="${c}">${c}</option>`).join('');
+    const options = codes.map(c => `<option value="${c}">${c}${SYMBOLS[c] ? ' ' + SYMBOLS[c] : ''}</option>`).join('');
     document.querySelectorAll('.cur-select').forEach(sel => {
         sel.innerHTML = '<option value="">...</option>' + options;
     });
@@ -237,15 +252,15 @@ document.querySelector('.read-more-btn').addEventListener('click', function () {
 document.querySelector('.add-cell').addEventListener('click', function () {
     const container = document.querySelector('.cells-container');
     const codes = fx.rates ? Object.keys(fx.rates).sort() : ['USD','EUR','RUB'];
-    const options = codes.map(c => `<option value="${c}">${c}</option>`).join('');
+    const options = codes.map(c => `<option value="${c}">${c}${SYMBOLS[c] ? ' ' + SYMBOLS[c] : ''}</option>`).join('');
 
     const newCell = document.createElement('div');
     newCell.classList.add('currency-cell');
     newCell.innerHTML = `
         <div class="top-currency-cells">
-            <button class="cur-btn" data-cur="USD">USD</button>
-            <button class="cur-btn" data-cur="EUR">EUR</button>
-            <button class="cur-btn" data-cur="RUB">RUB</button>
+            <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
+            <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
+            <button class="cur-btn" data-cur="RUB">RUB <span style="opacity:.55;font-size:11px">₽</span></button>
             <select class="cur-select">
                 <option value="">...</option>${options}
             </select>
