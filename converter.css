@@ -400,3 +400,31 @@ input::-webkit-inner-spin-button, input::-webkit-outer-spin-button { -webkit-app
     border-top: none;
     margin-top: 0;
 }
+
+/* ── Активная валюта ── */
+.cur-btn {
+    position: relative;
+    transition: border-color .15s, color .15s, background .15s;
+}
+.cur-btn.active {
+    background: var(--accent2);
+    border-color: var(--accent) !important;
+    color: #fff !important;
+}
+.cur-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+/* активный селект */
+.cur-select.active {
+    border-color: var(--accent);
+    color: var(--accent);
+}

@@ -173,6 +173,7 @@ document.addEventListener('change', e => {
     if (!e.target.classList.contains('cur-select')) return;
     const group = e.target.closest('.top-currency-cells');
     group.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.toggle('active', e.target.value !== '');
 });
 
 // ── Конвертация ──
