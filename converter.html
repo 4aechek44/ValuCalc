@@ -14,11 +14,7 @@
         <div class="rates-sidebar-title">Курсы валют</div>
 
         <!-- Заглушка — заменить на данные от API -->
-        <div class="rate-row">
-            <span class="rate-pair">USD/EUR</span>
-            <span class="rate-val">0.9210</span>
-            <span class="rate-up">▲ 0.12%</span>
-        </div>
+      
         <div class="rate-row">
             <span class="rate-pair">USD/RUB</span>
             <span class="rate-val">92.45</span>
@@ -50,9 +46,6 @@
             <span class="rate-down">▼ 0.15%</span>
         </div>
 
-        <div class="rates-placeholder">
-            // подключи API ключ для актуальных данных
-        </div>
     </aside>
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
@@ -63,6 +56,8 @@
             <div class="more-text" style="display:none;">
                 <p>Калькулятор для конвертации нескольких валют в одну.</p>
                 <p>Например: 2$ + 15₽ + 2¥ → сколько это в €?</p>
+                <p>В одном блоке пиши сумму и выбери валюту, потом</p>
+                <p>нажми на + и в новом появившемся блоке добавляй следующую и конвертируй</p>
             </div>
             <button class="read-more-btn">Подробнее...</button>
         </header>
@@ -109,7 +104,7 @@
         </div>
     </div>
 </div>
-
+<script src="https://www.cbr-xml-daily.ru/money.js"></script>
 <script>
     document.querySelector('.read-more-btn').addEventListener('click', function () {
         const moreText = this.previousElementSibling;
