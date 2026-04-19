@@ -9,11 +9,11 @@
 <body>
 <div class="app-wrapper">
 
-    <!-- САЙДБАР КУРСОВ ВАЛЮТ -->
+    <!-- САЙДБАР -->
     <aside class="rates-sidebar">
         <div class="rates-sidebar-title">Курсы валют</div>
         <div id="rates-list">
-            <div class="rate-row" style="color: var(--muted); font-size:11px; padding: 12px 16px;">
+            <div style="color:var(--muted);font-size:11px;padding:12px 16px;animation: pulse .8s ease infinite;">
                 Загрузка...
             </div>
         </div>
@@ -36,19 +36,15 @@
             <div class="cells-container">
                 <h3>У меня есть</h3>
                 <div class="top-currency-cells">
-                    <button>USD</button>
-                    <button>EUR</button>
-                    <button>RUB</button>
-                    <select>
-                        <option value="...">...</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="RUB">RUB</option>
-                        <option value="JPY">JPY</option>
+                    <button class="cur-btn" data-cur="USD">USD</button>
+                    <button class="cur-btn" data-cur="EUR">EUR</button>
+                    <button class="cur-btn" data-cur="RUB">RUB</button>
+                    <select class="cur-select">
+                        <option value="">...</option>
                     </select>
                     <button class="add-cell">+</button>
                 </div>
-                <input type="number" min="0" step="1" placeholder="Введите количество">
+                <input type="number" min="0" step="any" placeholder="Введите количество">
             </div>
 
             <button class="convert-btn">Конвертировать</button>
@@ -56,103 +52,203 @@
             <div class="convert-currency-cell">
                 <h3>Стоимость</h3>
                 <div class="top-currency-cells">
-                    <button>USD</button>
-                    <button>EUR</button>
-                    <button>RUB</button>
-                    <select>
-                        <option value="...">...</option>
-                        <option value="USD">USD</option>
-                        <option value="EUR">EUR</option>
-                        <option value="RUB">RUB</option>
-                        <option value="JPY">JPY</option>
+                    <button class="cur-btn" data-cur="USD">USD</button>
+                    <button class="cur-btn" data-cur="EUR">EUR</button>
+                    <button class="cur-btn" data-cur="RUB">RUB</button>
+                    <select class="cur-select">
+                        <option value="">...</option>
                     </select>
                 </div>
-                <input type="number" min="0" step="1" placeholder="Результат" disabled>
+                <input type="number" min="0" step="any" placeholder="Результат" disabled>
             </div>
 
         </div>
     </div>
 </div>
 
-<!-- money.js от ЦБ РФ -->
 <script src="https://www.cbr-xml-daily.ru/money.js"></script>
-
 <script>
-    // ── Заполнить сайдбар курсами из fx.rates ──
-    // Показываем только популярные пары относительно RUB
-    const SHOW_PAIRS = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'BYR', 'KZT', 'TRY', 'CHF', 'AUD'];
-
-    function renderRates() {
-        const list = document.getElementById('rates-list');
-
-        if (typeof fx === 'undefined' || !fx.rates) {
-            list.innerHTML = '<div style="color:var(--red);font-size:11px;padding:12px 16px;">Ошибка загрузки</div>';
-            return;
-        }
-
-        const base = fx.base; // обычно "RUB"
-        list.innerHTML = SHOW_PAIRS
-            .filter(code => fx.rates[code] !== undefined)
-            .map(code => {
-                const rate = (1 / fx.rates[code]).toFixed(4); // цена 1 единицы в RUB
-                return `
-                    <div class="rate-row">
-                        <span class="rate-pair">${code}/${base}</span>
-                        <span class="rate-val">${rate}</span>
-                    </div>
-                `;
-            })
-            .join('');
+// ── Группы валют для сайдбара ──
+const SIDEBAR_GROUPS = [
+    {
+        title: 'К рублю',
+        pairs: [
+            ['USD', 'RUB'], ['EUR', 'RUB'], ['GBP', 'RUB'],
+            ['CNY', 'RUB'], ['JPY', 'RUB'], ['CHF', 'RUB'],
+        ]
+    },
+    {
+        title: 'Мировые',
+        pairs: [
+            ['EUR', 'USD'], ['GBP', 'USD'], ['USD', 'JPY'],
+            ['USD', 'CHF'], ['AUD', 'USD'], ['USD', 'CNY'],
+        ]
+    },
+    {
+        title: 'СНГ',
+        pairs: [
+            ['USD', 'KZT'], ['USD', 'BYN'], ['USD', 'AMD'],
+            ['USD', 'UZS'],
+        ]
     }
+];
 
-    // money.js от ЦБ грузится синхронно — вызываем сразу
-    fetch('https://www.cbr-xml-daily.ru/daily_json.js')
+// ── Загрузка курсов ──
+fetch('https://open.er-api.com/v6/latest/RUB')
     .then(r => r.json())
     .then(data => {
         fx.base = 'RUB';
-        fx.rates = { RUB: 1 };
-        for (const [code, info] of Object.entries(data.Valute)) {
-            fx.rates[code] = info.Nominal / info.Value;
-        }
+        fx.rates = data.rates;
         renderRates();
+        populateSelects();
     })
     .catch(() => {
         document.getElementById('rates-list').innerHTML =
             '<div style="color:var(--red);font-size:11px;padding:12px 16px;">Ошибка загрузки</div>';
     });
 
-    // ── Кнопка "Подробнее" ──
-    document.querySelector('.read-more-btn').addEventListener('click', function () {
-        const moreText = this.previousElementSibling;
-        const hidden = moreText.style.display === 'none';
-        moreText.style.display = hidden ? 'block' : 'none';
-        this.textContent = hidden ? 'Скрыть' : 'Подробнее...';
-    });
+// ── Сайдбар ──
+function renderRates() {
+    const list = document.getElementById('rates-list');
+    let html = '';
 
-    // ── Кнопка + ──
-    document.querySelector('.add-cell').addEventListener('click', function () {
-        const container = document.querySelector('.cells-container');
-        const newCell = document.createElement('div');
-        newCell.classList.add('currency-cell');
-        newCell.innerHTML = `
-            <div class="top-currency-cells">
-                <button>USD</button>
-                <button>EUR</button>
-                <button>RUB</button>
-                <select>
-                    <option value="...">...</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="RUB">RUB</option>
-                    <option value="JPY">JPY</option>
-                </select>
-                <button class="del-cell">−</button>
-            </div>
-            <input type="number" min="0" step="1" placeholder="Введите количество">
-        `;
-        newCell.querySelector('.del-cell').addEventListener('click', () => newCell.remove());
-        container.appendChild(newCell);
+    for (const group of SIDEBAR_GROUPS) {
+        // фильтруем пары у которых оба кода есть в fx.rates
+        const validPairs = group.pairs.filter(
+            ([a, b]) => fx.rates[a] !== undefined && fx.rates[b] !== undefined
+        );
+        if (!validPairs.length) continue;
+
+        html += `<div class="rate-section-title">${group.title}</div>`;
+        for (const [from, to] of validPairs) {
+            const rate = fx(1).from(from).to(to);
+            const display = rate >= 100
+                ? rate.toFixed(2)
+                : rate >= 1
+                    ? rate.toFixed(4)
+                    : rate.toFixed(6);
+            html += `
+                <div class="rate-row">
+                    <span class="rate-pair">${from}/${to}</span>
+                    <span class="rate-val">${display}</span>
+                </div>`;
+        }
+    }
+
+    list.innerHTML = html;
+
+    // каскадная анимация строк
+    list.querySelectorAll('.rate-row').forEach((row, i) => {
+        setTimeout(() => row.classList.add('visible'), i * 40);
     });
+}
+
+// ── Заполнить селекты всеми валютами из API ──
+function populateSelects() {
+    const codes = Object.keys(fx.rates).sort();
+    const options = codes.map(c => `<option value="${c}">${c}</option>`).join('');
+    document.querySelectorAll('.cur-select').forEach(sel => {
+        sel.innerHTML = '<option value="">...</option>' + options;
+    });
+}
+
+// ── Выбор валюты кнопкой или селектом ──
+// Хранит выбранную валюту для каждой группы кнопок
+function getSelectedCurrency(group) {
+    const active = group.querySelector('.cur-btn.active');
+    if (active) return active.dataset.cur;
+    const sel = group.querySelector('.cur-select');
+    return sel && sel.value ? sel.value : null;
+}
+
+document.addEventListener('click', e => {
+    if (!e.target.classList.contains('cur-btn')) return;
+    const group = e.target.closest('.top-currency-cells');
+    group.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
+    group.querySelector('.cur-select').value = '';
+    e.target.classList.add('active');
+});
+
+document.addEventListener('change', e => {
+    if (!e.target.classList.contains('cur-select')) return;
+    const group = e.target.closest('.top-currency-cells');
+    group.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
+});
+
+// ── Конвертация ──
+document.querySelector('.convert-btn').addEventListener('click', function () {
+    if (!fx.rates) return;
+
+    const fromGroup = document.querySelector('.cells-container .top-currency-cells');
+    const toGroup   = document.querySelector('.convert-currency-cell .top-currency-cells');
+    const amountInput = document.querySelector('.cells-container > input');
+    const resultInput = document.querySelector('.convert-currency-cell input[disabled]');
+
+    // собираем все ячейки (основная + динамические)
+    const allCells = [
+        { group: fromGroup, input: amountInput },
+        ...Array.from(document.querySelectorAll('.currency-cell')).map(cell => ({
+            group: cell.querySelector('.top-currency-cells'),
+            input: cell.querySelector('input')
+        }))
+    ];
+
+    const toCur = getSelectedCurrency(toGroup);
+    if (!toCur) { alert('Выберите валюту результата'); return; }
+
+    this.classList.add('loading');
+
+    let total = 0;
+    let hasError = false;
+
+    for (const { group, input } of allCells) {
+        const fromCur = getSelectedCurrency(group);
+        const amount  = parseFloat(input.value);
+        if (!fromCur || isNaN(amount) || amount <= 0) continue;
+        if (!fx.rates[fromCur]) { hasError = true; continue; }
+        total += fx(amount).from(fromCur).to(toCur);
+    }
+
+    setTimeout(() => {
+        this.classList.remove('loading');
+        resultInput.classList.remove('result-flash');
+        void resultInput.offsetWidth; // reflow для перезапуска анимации
+        resultInput.classList.add('result-flash');
+        resultInput.value = hasError ? '?' : total.toFixed(4);
+    }, 300);
+});
+
+// ── Кнопка "Подробнее" ──
+document.querySelector('.read-more-btn').addEventListener('click', function () {
+    const moreText = this.previousElementSibling;
+    const hidden = moreText.style.display === 'none';
+    moreText.style.display = hidden ? 'block' : 'none';
+    this.textContent = hidden ? 'Скрыть' : 'Подробнее...';
+});
+
+// ── Кнопка + ──
+document.querySelector('.add-cell').addEventListener('click', function () {
+    const container = document.querySelector('.cells-container');
+    const codes = fx.rates ? Object.keys(fx.rates).sort() : ['USD','EUR','RUB'];
+    const options = codes.map(c => `<option value="${c}">${c}</option>`).join('');
+
+    const newCell = document.createElement('div');
+    newCell.classList.add('currency-cell');
+    newCell.innerHTML = `
+        <div class="top-currency-cells">
+            <button class="cur-btn" data-cur="USD">USD</button>
+            <button class="cur-btn" data-cur="EUR">EUR</button>
+            <button class="cur-btn" data-cur="RUB">RUB</button>
+            <select class="cur-select">
+                <option value="">...</option>${options}
+            </select>
+            <button class="del-cell">−</button>
+        </div>
+        <input type="number" min="0" step="any" placeholder="Введите количество">
+    `;
+    newCell.querySelector('.del-cell').addEventListener('click', () => newCell.remove());
+    container.appendChild(newCell);
+});
 </script>
 </body>
 </html>
