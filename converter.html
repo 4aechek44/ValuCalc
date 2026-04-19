@@ -12,40 +12,11 @@
     <!-- САЙДБАР КУРСОВ ВАЛЮТ -->
     <aside class="rates-sidebar">
         <div class="rates-sidebar-title">Курсы валют</div>
-
-        <!-- Заглушка — заменить на данные от API -->
-      
-        <div class="rate-row">
-            <span class="rate-pair">USD/RUB</span>
-            <span class="rate-val">92.45</span>
-            <span class="rate-down">▼ 0.34%</span>
+        <div id="rates-list">
+            <div class="rate-row" style="color: var(--muted); font-size:11px; padding: 12px 16px;">
+                Загрузка...
+            </div>
         </div>
-        <div class="rate-row">
-            <span class="rate-pair">EUR/RUB</span>
-            <span class="rate-val">100.31</span>
-            <span class="rate-up">▲ 0.07%</span>
-        </div>
-        <div class="rate-row">
-            <span class="rate-pair">USD/JPY</span>
-            <span class="rate-val">154.82</span>
-            <span class="rate-up">▲ 0.21%</span>
-        </div>
-        <div class="rate-row">
-            <span class="rate-pair">GBP/USD</span>
-            <span class="rate-val">1.2705</span>
-            <span class="rate-down">▼ 0.09%</span>
-        </div>
-        <div class="rate-row">
-            <span class="rate-pair">USD/CNY</span>
-            <span class="rate-val">7.2310</span>
-            <span class="rate-up">▲ 0.03%</span>
-        </div>
-        <div class="rate-row">
-            <span class="rate-pair">AUD/USD</span>
-            <span class="rate-val">0.6520</span>
-            <span class="rate-down">▼ 0.15%</span>
-        </div>
-
     </aside>
 
     <!-- ОСНОВНОЙ КОНТЕНТ -->
@@ -56,8 +27,6 @@
             <div class="more-text" style="display:none;">
                 <p>Калькулятор для конвертации нескольких валют в одну.</p>
                 <p>Например: 2$ + 15₽ + 2¥ → сколько это в €?</p>
-                <p>В одном блоке пиши сумму и выбери валюту, потом</p>
-                <p>нажми на + и в новом появившемся блоке добавляй следующую и конвертируй</p>
             </div>
             <button class="read-more-btn">Подробнее...</button>
         </header>
@@ -104,8 +73,55 @@
         </div>
     </div>
 </div>
+
+<!-- money.js от ЦБ РФ -->
 <script src="https://www.cbr-xml-daily.ru/money.js"></script>
+
 <script>
+    // ── Заполнить сайдбар курсами из fx.rates ──
+    // Показываем только популярные пары относительно RUB
+    const SHOW_PAIRS = ['USD', 'EUR', 'GBP', 'JPY', 'CNY', 'BYR', 'KZT', 'TRY', 'CHF', 'AUD'];
+
+    function renderRates() {
+        const list = document.getElementById('rates-list');
+
+        if (typeof fx === 'undefined' || !fx.rates) {
+            list.innerHTML = '<div style="color:var(--red);font-size:11px;padding:12px 16px;">Ошибка загрузки</div>';
+            return;
+        }
+
+        const base = fx.base; // обычно "RUB"
+        list.innerHTML = SHOW_PAIRS
+            .filter(code => fx.rates[code] !== undefined)
+            .map(code => {
+                const rate = (1 / fx.rates[code]).toFixed(4); // цена 1 единицы в RUB
+                return `
+                    <div class="rate-row">
+                        <span class="rate-pair">${code}/${base}</span>
+                        <span class="rate-val">${rate}</span>
+                    </div>
+                `;
+            })
+            .join('');
+    }
+
+    // money.js от ЦБ грузится синхронно — вызываем сразу
+    fetch('https://www.cbr-xml-daily.ru/daily_json.js')
+    .then(r => r.json())
+    .then(data => {
+        fx.base = 'RUB';
+        fx.rates = { RUB: 1 };
+        for (const [code, info] of Object.entries(data.Valute)) {
+            fx.rates[code] = info.Nominal / info.Value;
+        }
+        renderRates();
+    })
+    .catch(() => {
+        document.getElementById('rates-list').innerHTML =
+            '<div style="color:var(--red);font-size:11px;padding:12px 16px;">Ошибка загрузки</div>';
+    });
+
+    // ── Кнопка "Подробнее" ──
     document.querySelector('.read-more-btn').addEventListener('click', function () {
         const moreText = this.previousElementSibling;
         const hidden = moreText.style.display === 'none';
@@ -113,6 +129,7 @@
         this.textContent = hidden ? 'Скрыть' : 'Подробнее...';
     });
 
+    // ── Кнопка + ──
     document.querySelector('.add-cell').addEventListener('click', function () {
         const container = document.querySelector('.cells-container');
         const newCell = document.createElement('div');
