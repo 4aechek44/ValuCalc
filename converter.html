@@ -219,6 +219,12 @@ document.querySelector('.convert-btn').addEventListener('click', function () {
     }, 300);
 });
 
+// ── Выбрать первую кнопку по умолчанию в каждой группе ──
+document.querySelectorAll('.top-currency-cells').forEach(group => {
+    const first = group.querySelector('.cur-btn');
+    if (first) first.classList.add('active');
+});
+
 // ── Кнопка "Подробнее" ──
 document.querySelector('.read-more-btn').addEventListener('click', function () {
     const moreText = this.previousElementSibling;
