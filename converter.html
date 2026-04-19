@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,110 +7,140 @@
     <title>ValuCalc</title>
 </head>
 <body>
-    <!-- ЗАГОЛОВОК -->
-    <h1>Конвертер любого колличества валюты в одну</h1>
-    <div class="more-text" style="display:none;">
-      <p class="more-btn-text">Этот калькулятор может помочь вам если у вас много разной валюты и вы хотите</p>
-      <p class="more-btn-text">увидеть их стоимость в одной. Например:</p>
-      <p class="more-btn-text">У меня 2 доллара, 15 рублей, 2 йены. Сколько это будет в евро? и т.п</p>
-    </div>
-    <button class="read-more-btn">Подробнее...</button>
+<div class="app-wrapper">
 
-    <!-- Ячейки -->
-    <div class="currency-cells">
-      <div class="cells-container">
-        <h3>У меня есть:</h3>
-        
-        <div class="top-currency-cells">
-        <button>USD</button>
-        <button>EUR</button>
-        <button>RUB</button>
+    <!-- САЙДБАР КУРСОВ ВАЛЮТ -->
+    <aside class="rates-sidebar">
+        <div class="rates-sidebar-title">Курсы валют</div>
 
-        <select>
-        <option value="...">...</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="RUB">RUB</option>
-        <option value="JPY">JPY</option>
-        </select>
-        
-        <button class="add-cell">+</button>
-       </div>  
+        <!-- Заглушка — заменить на данные от API -->
+        <div class="rate-row">
+            <span class="rate-pair">USD/EUR</span>
+            <span class="rate-val">0.9210</span>
+            <span class="rate-up">▲ 0.12%</span>
+        </div>
+        <div class="rate-row">
+            <span class="rate-pair">USD/RUB</span>
+            <span class="rate-val">92.45</span>
+            <span class="rate-down">▼ 0.34%</span>
+        </div>
+        <div class="rate-row">
+            <span class="rate-pair">EUR/RUB</span>
+            <span class="rate-val">100.31</span>
+            <span class="rate-up">▲ 0.07%</span>
+        </div>
+        <div class="rate-row">
+            <span class="rate-pair">USD/JPY</span>
+            <span class="rate-val">154.82</span>
+            <span class="rate-up">▲ 0.21%</span>
+        </div>
+        <div class="rate-row">
+            <span class="rate-pair">GBP/USD</span>
+            <span class="rate-val">1.2705</span>
+            <span class="rate-down">▼ 0.09%</span>
+        </div>
+        <div class="rate-row">
+            <span class="rate-pair">USD/CNY</span>
+            <span class="rate-val">7.2310</span>
+            <span class="rate-up">▲ 0.03%</span>
+        </div>
+        <div class="rate-row">
+            <span class="rate-pair">AUD/USD</span>
+            <span class="rate-val">0.6520</span>
+            <span class="rate-down">▼ 0.15%</span>
+        </div>
 
-      <input type="number" min="0" step="1" placeholder="Введите количество">
-    
-    </div>
+        <div class="rates-placeholder">
+            // подключи API ключ для актуальных данных
+        </div>
+    </aside>
 
-    <button class="convert-btn">Конвертировать</button>
+    <!-- ОСНОВНОЙ КОНТЕНТ -->
+    <div class="main-content">
 
-    <div class="convert-currency-cell">
-      <h3>Стоимость:</h3>
-      <div class="top-currency-cells">
-        <button>USD</button>
-        <button>EUR</button>
-        <button>RUB</button>
-    
-      <select>
-        <option value="...">...</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="RUB">RUB</option>
-        <option value="JPY">JPY</option>
-      </select>
-    
-        </div>  
-    
-        <input type="number" min="0" step="1" placeholder="Результат конвертации" disabled>
+        <header class="site-header">
+            <h1>Valu<span>Calc</span></h1>
+            <div class="more-text" style="display:none;">
+                <p>Калькулятор для конвертации нескольких валют в одну.</p>
+                <p>Например: 2$ + 15₽ + 2¥ → сколько это в €?</p>
+            </div>
+            <button class="read-more-btn">Подробнее...</button>
+        </header>
+
+        <div class="currency-cells">
+
+            <div class="cells-container">
+                <h3>У меня есть</h3>
+                <div class="top-currency-cells">
+                    <button>USD</button>
+                    <button>EUR</button>
+                    <button>RUB</button>
+                    <select>
+                        <option value="...">...</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="RUB">RUB</option>
+                        <option value="JPY">JPY</option>
+                    </select>
+                    <button class="add-cell">+</button>
+                </div>
+                <input type="number" min="0" step="1" placeholder="Введите количество">
+            </div>
+
+            <button class="convert-btn">Конвертировать</button>
+
+            <div class="convert-currency-cell">
+                <h3>Стоимость</h3>
+                <div class="top-currency-cells">
+                    <button>USD</button>
+                    <button>EUR</button>
+                    <button>RUB</button>
+                    <select>
+                        <option value="...">...</option>
+                        <option value="USD">USD</option>
+                        <option value="EUR">EUR</option>
+                        <option value="RUB">RUB</option>
+                        <option value="JPY">JPY</option>
+                    </select>
+                </div>
+                <input type="number" min="0" step="1" placeholder="Результат" disabled>
+            </div>
+
+        </div>
     </div>
 </div>
 
-    <script>
-        // Скрипт для кнопки "Подробнее..."
-        document.querySelector('.read-more-btn').addEventListener('click', function() {
-      let moreText = this.previousElementSibling;
-      if (moreText.style.display === "none") {
-        moreText.style.display = "block";
-        this.textContent = "Скрыть";
-      } else {
-        moreText.style.display = "none";
-        this.textContent = "Подробнее...";
-      }
-      });
+<script>
+    document.querySelector('.read-more-btn').addEventListener('click', function () {
+        const moreText = this.previousElementSibling;
+        const hidden = moreText.style.display === 'none';
+        moreText.style.display = hidden ? 'block' : 'none';
+        this.textContent = hidden ? 'Скрыть' : 'Подробнее...';
+    });
 
-        //   Скрипт для кнопки добавления новой ячейки
-document.querySelector('.add-cell').addEventListener('click', function() {
-  
-  const container = document.querySelector('.cells-container');
-
-  const newCell = document.createElement('div');
-  newCell.classList.add('currency-cell');
-
-  newCell.innerHTML = `
-    <div class="top-currency-cells">
-      <button>USD</button>
-      <button>EUR</button>
-      <button>RUB</button>
-
-      <select>
-        <option value="...">...</option>
-        <option value="USD">USD</option>
-        <option value="EUR">EUR</option>
-        <option value="RUB">RUB</option>
-        <option value="JPY">JPY</option>
-      </select>
-
-      <button class="del-cell"> - </button>
-    </div>  
-
-    <input type="number" min="0" step="1" placeholder="Введите количество">
-  `;
-
-  newCell.querySelector('.del-cell').addEventListener('click', function() {
-    newCell.remove();
-  });
-
-  container.appendChild(newCell);
-});
-    </script>
+    document.querySelector('.add-cell').addEventListener('click', function () {
+        const container = document.querySelector('.cells-container');
+        const newCell = document.createElement('div');
+        newCell.classList.add('currency-cell');
+        newCell.innerHTML = `
+            <div class="top-currency-cells">
+                <button>USD</button>
+                <button>EUR</button>
+                <button>RUB</button>
+                <select>
+                    <option value="...">...</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="RUB">RUB</option>
+                    <option value="JPY">JPY</option>
+                </select>
+                <button class="del-cell">−</button>
+            </div>
+            <input type="number" min="0" step="1" placeholder="Введите количество">
+        `;
+        newCell.querySelector('.del-cell').addEventListener('click', () => newCell.remove());
+        container.appendChild(newCell);
+    });
+</script>
 </body>
 </html>
