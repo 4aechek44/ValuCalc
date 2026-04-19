@@ -27,6 +27,7 @@
             <div class="more-text" style="display:none;">
                 <p>Калькулятор для конвертации нескольких валют в одну.</p>
                 <p>Например: 2$ + 15₽ + 2¥ → сколько это в €?</p>
+                <p>Нажми на + для добавления еще одной валюты.</p>
             </div>
             <button class="read-more-btn">Подробнее...</button>
         </header>
@@ -39,9 +40,10 @@
                     <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
                     <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
                     <button class="cur-btn" data-cur="RUB">RUB <span style="opacity:.55;font-size:11px">₽</span></button>
-                    <select class="cur-select">
-                        <option value="">...</option>
-                    </select>
+                    <div class="custom-select cur-select">
+                        <div class="cs-trigger"><span class="cs-val">...</span><span class="cs-arrow">▼</span></div>
+                        <div class="cs-dropdown"></div>
+                    </div>
                     <button class="add-cell">+</button>
                 </div>
                 <input type="number" min="0" step="any" placeholder="Введите количество">
@@ -55,9 +57,10 @@
                     <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
                     <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
                     <button class="cur-btn" data-cur="RUB">RUB <span style="opacity:.55;font-size:11px">₽</span></button>
-                    <select class="cur-select">
-                        <option value="">...</option>
-                    </select>
+                    <div class="custom-select cur-select">
+                        <div class="cs-trigger"><span class="cs-val">...</span><span class="cs-arrow">▼</span></div>
+                        <div class="cs-dropdown"></div>
+                    </div>
                 </div>
                 <input type="number" min="0" step="any" placeholder="Результат" disabled>
             </div>
@@ -158,38 +161,68 @@ function renderRates() {
     });
 }
 
-// ── Заполнить селекты всеми валютами из API ──
+// ── Заполнить кастомные селекты ──
 function populateSelects() {
     const codes = Object.keys(fx.rates).sort();
-    const options = codes.map(c => `<option value="${c}">${c}${SYMBOLS[c] ? ' ' + SYMBOLS[c] : ''}</option>`).join('');
-    document.querySelectorAll('.cur-select').forEach(sel => {
-        sel.innerHTML = '<option value="">...</option>' + options;
+    document.querySelectorAll('.custom-select').forEach(cs => {
+        const drop = cs.querySelector('.cs-dropdown');
+        drop.innerHTML = codes.map(c =>
+            `<div class="cs-option" data-val="${c}">
+                <span>${c}</span>
+                <span class="cs-sym">${SYMBOLS[c] || ''}</span>
+            </div>`
+        ).join('');
+        drop.querySelectorAll('.cs-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                const val = opt.dataset.val;
+                cs.dataset.value = val;
+                cs.querySelector('.cs-val').textContent = val;
+                drop.querySelectorAll('.cs-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                cs.classList.remove('open');
+                // снять active с кнопок группы
+                const group = cs.closest('.top-currency-cells');
+                group.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
+                cs.classList.add('active');
+            });
+        });
     });
 }
+
+// ── Открытие/закрытие дропдауна ──
+document.addEventListener('click', e => {
+    const trigger = e.target.closest('.cs-trigger');
+    if (trigger) {
+        const cs = trigger.closest('.custom-select');
+        const wasOpen = cs.classList.contains('open');
+        document.querySelectorAll('.custom-select.open').forEach(el => el.classList.remove('open'));
+        if (!wasOpen) cs.classList.add('open');
+        return;
+    }
+    if (!e.target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select.open').forEach(el => el.classList.remove('open'));
+    }
+});
 
 // ── Выбор валюты кнопкой или селектом ──
 // Хранит выбранную валюту для каждой группы кнопок
 function getSelectedCurrency(group) {
     const active = group.querySelector('.cur-btn.active');
     if (active) return active.dataset.cur;
-    const sel = group.querySelector('.cur-select');
-    return sel && sel.value ? sel.value : null;
+    const cs = group.querySelector('.custom-select');
+    return cs && cs.dataset.value ? cs.dataset.value : null;
 }
 
 document.addEventListener('click', e => {
     if (!e.target.classList.contains('cur-btn')) return;
     const group = e.target.closest('.top-currency-cells');
     group.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
-    group.querySelector('.cur-select').value = '';
+    const cs = group.querySelector('.custom-select');
+    if (cs) { cs.dataset.value = ''; cs.querySelector('.cs-val').textContent = '...'; cs.classList.remove('active'); }
     e.target.classList.add('active');
 });
 
-document.addEventListener('change', e => {
-    if (!e.target.classList.contains('cur-select')) return;
-    const group = e.target.closest('.top-currency-cells');
-    group.querySelectorAll('.cur-btn').forEach(b => b.classList.remove('active'));
-    e.target.classList.toggle('active', e.target.value !== '');
-});
+
 
 // ── Конвертация ──
 document.querySelector('.convert-btn').addEventListener('click', function () {
