@@ -51,6 +51,7 @@ Rates are fetched in real time via [open.er-api.com](https://open.er-api.com).
 Open link
 https://4aechek44.github.io/ValuCalc/
 
+if you see 'Loading error' - press Ctrl + R
 ## Usage
 
 1. Pick a currency in the **"I have"** block and enter an amount
