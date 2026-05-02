@@ -49,7 +49,7 @@ Rates are fetched in real time via [open.er-api.com](https://open.er-api.com).
 ## Getting Started
 
 Open link
-[https://4aechek44.github.io/ValuCalc/](https://4aechek44.github.io/ValuCalc/)
+https://4aechek44.github.io/ValuCalc/
 
 ## Usage
 
