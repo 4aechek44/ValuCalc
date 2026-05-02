@@ -25,17 +25,17 @@
         <header class="site-header">
             <h1>Valu<span>Calc</span></h1>
             <div class="more-text" style="display:none;">
-                <p>Калькулятор для конвертации нескольких валют в одну.</p>
-                <p>Например: 2$ + 15₽ + 2¥ → сколько это в €?</p>
-                <p>Нажми на + для добавления еще одной валюты.</p>
+                <p>A calculator for converting multiple currencies into one.</p>
+                <p>For example: $2 + ₽15 + ¥2 → how much is that in €?</p>
+                <p>Click + to add another currency.</p>
             </div>
-            <button class="read-more-btn">Подробнее...</button>
+            <button class="read-more-btn">More...</button>
         </header>
 
         <div class="currency-cells">
 
             <div class="cells-container">
-                <h3>У меня есть</h3>
+                <h3>I have</h3>
                 <div class="top-currency-cells">
                     <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
                     <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
@@ -49,10 +49,10 @@
                 <input type="number" min="0" step="any" placeholder="Введите количество">
             </div>
 
-            <button class="convert-btn">Конвертировать</button>
+            <button class="convert-btn">Convert</button>
 
             <div class="convert-currency-cell">
-                <h3>Стоимость</h3>
+                <h3>Result</h3>
                 <div class="top-currency-cells">
                     <button class="cur-btn" data-cur="USD">USD <span style="opacity:.55;font-size:11px">$</span></button>
                     <button class="cur-btn" data-cur="EUR">EUR <span style="opacity:.55;font-size:11px">€</span></button>
@@ -89,21 +89,21 @@ function sym(code) {
 // ── Группы валют для сайдбара ──
 const SIDEBAR_GROUPS = [
     {
-        title: 'К рублю',
+        title: 'To RUB',
         pairs: [
             ['USD', 'RUB'], ['EUR', 'RUB'], ['GBP', 'RUB'],
             ['CNY', 'RUB'], ['JPY', 'RUB'], ['CHF', 'RUB'],
         ]
     },
     {
-        title: 'Мировые',
+        title: 'World',
         pairs: [
             ['EUR', 'USD'], ['GBP', 'USD'], ['USD', 'JPY'],
             ['USD', 'CHF'], ['AUD', 'USD'], ['USD', 'CNY'],
         ]
     },
     {
-        title: 'СНГ',
+        title: 'CIS',
         pairs: [
             ['USD', 'KZT'], ['USD', 'BYN'], ['USD', 'AMD'],
             ['USD', 'UZS'],
